@@ -1,15 +1,9 @@
 <html>
 <head>
-	<style>
-	*{margin:0;padding:0} 
-	canvas{display: block}
-	#container{width: 100vw;height: 100vh}
-</style>
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/85/three.min.js"></script> -->
 	<script src ="https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js"></script>
 </head>
 <body>
-
 
 	<video id="video" style="display:none" autoplay playsinline></video>
 	<script id="fragShader" type="shader-code">
@@ -26,14 +20,16 @@
 		void main() {
 			vec2 st = gl_FragCoord.xy / res;
 			vec2 uv = st;
-			st = rotate(0.5*sin(st*2.), time);
-			uv *= 0.992;
+			//st = rotate(0.5*sin(st*20.), time);
+			uv.x *= 0.992;
+            uv.y *= 0.992;
+            st *= rotate(st, time);
 			//uv.y = sin(uv.y);
 			vec4 sum = texture2D(bufferTexture, uv);
-			vec4 src = texture2D(videoTexture, uv)*vec4(sin(10.*st.y-st.x+time)*0.5+0.5,0.5*sin(time+1.0)+0.5,1.0,1.0);
+			vec4 src = texture2D(videoTexture, uv);
 			sum.rgb = mix(sin(20.*sum.rbg), src.rgb,.05*sin(uv.x+time)*0.5+0.5);
 			//sum.rgb /= mix(sin(200.*sum.rbg), src.rgb,.05*sin(uv.x+time*5.0)*0.5+0.5);
-	
+            sum.rgb = max(src.rgb, sum.rgb)/sum.rgb*0.5;
 			gl_FragColor = vec4(sum.rgb, sin(uv.x*uv.x*200.));
 		 	
 		 }
@@ -136,8 +132,8 @@
 		  //Swap textureA and B
 		  var t = textureA;
 		  textureA = textureB;
-		  textureB = t;
-		//   textureC = t;
+		  textureB = textureC;
+		  textureC = t;
 		  quad.material.map = textureB.texture;
 		  bufferMaterial.uniforms.bufferTexture.value = textureA.texture;
 

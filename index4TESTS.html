@@ -25,14 +25,14 @@
 		}
 		void main() {
 			vec2 st = gl_FragCoord.xy / res;
-			vec2 uv = st;
+			vec2 uv = abs(st-0.5*2.);
 			st = rotate(0.5*sin(st*2.), time);
 			uv *= 0.992;
 			//uv.y = sin(uv.y);
 			vec4 sum = texture2D(bufferTexture, uv);
 			vec4 src = texture2D(videoTexture, uv)*vec4(sin(10.*st.y-st.x+time)*0.5+0.5,0.5*sin(time+1.0)+0.5,1.0,1.0);
-			sum.rgb = mix(sin(20.*sum.rbg), src.rgb,.05*sin(uv.x+time)*0.5+0.5);
-			//sum.rgb /= mix(sin(200.*sum.rbg), src.rgb,.05*sin(uv.x+time*5.0)*0.5+0.5);
+			sum.rgb = mix(sin(10.*sum.rbg), src.rgb,.05*sin(uv.x+time)*0.5+0.5);
+			//sum.rgb /= mix(sin(10.*sum.rbg), src.rgb,.05*sin(uv.x+time*5.0)*0.5+0.5);
 	
 			gl_FragColor = vec4(sum.rgb, sin(uv.x*uv.x*200.));
 		 	
